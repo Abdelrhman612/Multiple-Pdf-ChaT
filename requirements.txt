@@ -1,0 +1,4 @@
+langchain-ollama
+pypdf2
+streamlit
+faiss-cpu

@@ -1,5 +1,8 @@
 import  streamlit as st
 from PyPDF2 import PdfReader
+from langchain_text_splitters import CharacterTextSplitter
+from langchain_community.embeddings import OllamaEmbeddings
+from langchain_community.vectorstores import FAISS
 
 
 def get_pdf_text(pdf_docs):
@@ -9,6 +12,23 @@ def get_pdf_text(pdf_docs):
     for page in pdf_reader.pages:
         text += page.extract_text()
     return text
+
+def get_text_chunks(raw_text):
+   text_splitter = CharacterTextSplitter(
+      separator="\n",
+      chunk_size=1000,
+      chunk_overlap=200,
+     length_function=len
+   )
+   chunks = text_splitter.split_text(raw_text)
+   return chunks
+
+def get_vector_store(text_chunk):
+    embeddings = OllamaEmbeddings(model="nomic-embed-text")
+    vector_store = FAISS.from_texts(text_chunk , embedding=embeddings)
+    return vector_store
+
+    
 
 
 def main():
@@ -23,7 +43,10 @@ def main():
           with st.spinner("Processing..."):
 
            raw_text = get_pdf_text(pdf_docs)
-           st.write(raw_text)
+           text_chunk = get_text_chunks(raw_text)
+           vector_store =  get_vector_store(text_chunk)
+           
+           
 
 
 

@@ -1,4 +1,7 @@
 langchain-ollama
+langchain
+langchain-text-splitters
+langchain-community
 pypdf2
 streamlit
 faiss-cpu

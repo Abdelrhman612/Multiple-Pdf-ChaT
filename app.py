@@ -32,7 +32,7 @@ def get_vector_store(text_chunks):
 
 
 # --- LLM ---
-llm = OllamaLLM(model="tinyllama")
+llm = OllamaLLM(model="mistral")
 
 
 # --- App ---
@@ -87,7 +87,7 @@ Question:
 
                     st.session_state.vectorstore = get_vector_store(chunks)
 
-                st.success("Ready 🚀")
+                st.success("Ready for questions!")
 
 
 if __name__ == "__main__":

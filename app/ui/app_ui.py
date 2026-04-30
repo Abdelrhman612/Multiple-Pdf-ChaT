@@ -10,15 +10,30 @@ def run_ui():
     if "vectorstore" not in st.session_state:
         st.session_state.vectorstore = None
 
-    user_question = st.text_input("Ask a question")
+    if "messages" not in st.session_state:
+        st.session_state.messages = []
+
+    for message in st.session_state.messages:
+        with st.chat_message(message["role"]):
+            st.markdown(message["content"])
 
     # --- Ask question ---
-    if user_question and st.session_state.vectorstore:
-        response = process_question(
-            st.session_state.vectorstore,
-            user_question
-        )
-        st.write(response)
+    if user_question := st.chat_input("Ask a question"):
+        st.session_state.messages.append({"role": "user", "content": user_question})
+        with st.chat_message("user"):
+            st.markdown(user_question)
+
+        if st.session_state.vectorstore:
+            with st.chat_message("assistant"):
+                response_stream = process_question(
+                    st.session_state.vectorstore,
+                    user_question,
+                    st.session_state.messages
+                )
+                full_response = st.write_stream(response_stream)
+            st.session_state.messages.append({"role": "assistant", "content": full_response})
+        else:
+            st.warning("Please upload and process PDFs first.")
 
     # --- Sidebar ---
     with st.sidebar:

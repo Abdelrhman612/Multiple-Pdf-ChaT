@@ -11,9 +11,10 @@ def process_pdfs(pdf_docs):
     return get_vector_store(chunks)
 
 
-def process_question(vectorstore, question):
+def process_question(vectorstore, question, chat_history=None):
     return get_answer(
         vectorstore,
         question,
-        generate_answer
+        generate_answer,
+        chat_history
     )

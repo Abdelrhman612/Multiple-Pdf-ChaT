@@ -1,6 +1,6 @@
 from langdetect import detect
 
-def get_answer(vectorstore, question, llm):
+def get_answer(vectorstore, question, llm, chat_history=None):
     
     
     try:
@@ -17,6 +17,12 @@ def get_answer(vectorstore, question, llm):
 
     context = "\n".join([d.page_content for d in docs])
 
+    history_str = ""
+    if chat_history:
+        for msg in chat_history[:-1]:
+            role = "User" if msg["role"] == "user" else "Assistant"
+            history_str += f"{role}: {msg['content']}\n"
+
     prompt = f"""
 You are a helpful assistant.
 
@@ -29,6 +35,9 @@ Ignore unrelated context even if it seems similar.
 
 Context:
 {context}
+
+Chat History:
+{history_str}
 
 Question:
 {question}

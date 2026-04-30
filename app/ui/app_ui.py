@@ -24,14 +24,15 @@ def run_ui():
             st.markdown(user_question)
 
         if st.session_state.vectorstore:
-            with st.chat_message("assistant"):
-                response_stream = process_question(
+            with st.spinner("Thinking..."):
+                response = process_question(
                     st.session_state.vectorstore,
                     user_question,
                     st.session_state.messages
                 )
-                full_response = st.write_stream(response_stream)
-            st.session_state.messages.append({"role": "assistant", "content": full_response})
+            with st.chat_message("assistant"):
+                st.markdown(response)
+            st.session_state.messages.append({"role": "assistant", "content": response})
         else:
             st.warning("Please upload and process PDFs first.")
 
